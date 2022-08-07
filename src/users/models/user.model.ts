@@ -1,4 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { CustomEmailScalar } from '../../common/CustomEmailScalar';
+import { CustomPasswordScalar } from '../../common/CustomPasswordScalar';
 import { UserWithPasswordInterface } from '../interfaces/user-with-password.interface';
 
 @ObjectType({ description: 'user' })
@@ -9,9 +11,9 @@ export class UserModel implements UserWithPasswordInterface {
   @Field()
   name: string;
 
-  @Field()
+  @Field((type) => CustomEmailScalar)
   email: string;
 
-  @Field()
+  @Field((type) => CustomPasswordScalar)
   password: string;
 }

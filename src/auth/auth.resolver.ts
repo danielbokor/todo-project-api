@@ -27,9 +27,7 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') password: string,
   ) {
-    const user = await this.authService.validateUser(email, password);
-
-    return this.authService.login(user);
+    return this.authService.login(email, password);
   }
 
   @Mutation((returns) => AccessTokenPayload)

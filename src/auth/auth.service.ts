@@ -26,7 +26,9 @@ export class AuthService {
     return existentUser;
   }
 
-  async login({ id, email }: UserModel): Promise<LoginPayload> {
+  async login(email: string, password: string) {
+    const { id } = await this.validateUser(email, password);
+
     const payload = { id, email };
     return {
       accessToken: this.jwtService.sign(payload),

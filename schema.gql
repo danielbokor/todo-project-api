@@ -6,9 +6,15 @@
 type UserModel {
   id: ID!
   name: String!
-  email: String!
-  password: String!
+  email: Email!
+  password: Password!
 }
+
+"""A simple email field parser"""
+scalar Email
+
+"""A simple password field parser"""
+scalar Password
 
 """access token payload"""
 type AccessTokenPayload {
