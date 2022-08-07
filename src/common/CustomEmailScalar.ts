@@ -1,10 +1,11 @@
+import { BadRequestException } from '@nestjs/common';
 import { GraphQLScalarType } from 'graphql';
 
 const regex = /[A-z0-9._%+-]+@[A-z0-9.-]+\.[A-z]{2,63}$/i;
 
 function validate(email: unknown): string | never {
   if (typeof email !== 'string' || !regex.test(email)) {
-    throw new Error('invalid email field');
+    throw new BadRequestException('invalid email field');
   }
   return email;
 }

@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { stringify } from 'querystring';
+import { CustomEmailScalar } from '../common/CustomEmailScalar';
 import { UserModel } from '../users/models/user.model';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
