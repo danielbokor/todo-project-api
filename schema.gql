@@ -10,11 +10,12 @@ type UserModel {
   password: String!
 }
 
+"""access token payload"""
 type AccessTokenPayload {
   accessToken: String!
 }
 
-"""user"""
+"""login payload"""
 type LoginPayload {
   """The auth token of an user."""
   accessToken: String!
@@ -23,13 +24,22 @@ type LoginPayload {
   refreshToken: String!
 }
 
+"""todo"""
+type TodoModel {
+  id: ID!
+  title: String!
+  isCompleted: Boolean!
+}
+
 type Query {
-  user(id: String!): UserModel!
-  users: [UserModel!]!
+  listTodos: [TodoModel!]!
 }
 
 type Mutation {
   signUp(name: String!, email: String!, password: String!): UserModel!
   login(email: String!, password: String!): LoginPayload!
   refreshAccessToken(refreshToken: String!): AccessTokenPayload!
+  createTodo(title: String!, isCompleted: Boolean!): TodoModel!
+  updateTodo(id: String!, isCompleted: Boolean!): TodoModel!
+  deleteTodo(id: String!): TodoModel!
 }

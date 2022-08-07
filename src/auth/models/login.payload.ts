@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { AccessTokenInterface } from '../interfaces/access-token.interface';
 import { RefreshTokenInterface } from '../interfaces/refresh-token.interface';
 
-@ObjectType({ description: 'user' })
+@ObjectType({ description: 'login payload' })
 export class LoginPayload
   implements AccessTokenInterface, RefreshTokenInterface
 {
