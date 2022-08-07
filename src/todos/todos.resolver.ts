@@ -1,6 +1,7 @@
 import { Request, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { SuccessPayload } from './dto/success.payload';
 import { TodoModel } from './models/todo.model';
 import { TodosService } from './todos.service';
 
@@ -11,8 +12,7 @@ export class TodosResolver {
 
   @Query((returns) => [TodoModel])
   async listTodos(@Context() context: any) {
-    const { id: userId } = context.req.user;
-    return this.todosService.findAll();
+    return this.todosService.findAll(context.req.user.id);
   }
 
   @Mutation((returns) => TodoModel)
@@ -21,21 +21,25 @@ export class TodosResolver {
     @Args('isCompleted') isCompleted: boolean,
     @Context() context: any,
   ) {
-    const { id: userId } = context.req.user;
-    return this.todosService.create(title, isCompleted, userId);
+    return this.todosService.create(title, isCompleted, context.req.user.id);
   }
 
   @Mutation((returns) => TodoModel)
   async updateTodo(
-    @Context() context: any,
     @Args('id') id: string,
     @Args('isCompleted') isCompleted: boolean,
+    @Context() context: any,
   ) {
-    return this.todosService.update(id, isCompleted);
+    return this.todosService.update(id, isCompleted, context.req.user.id);
   }
 
-  @Mutation((returns) => TodoModel)
-  async deleteTodo(@Context() context: any, @Args('id') id: string) {
-    return this.todosService.remove(id);
+  @Mutation((returns) => SuccessPayload)
+  async deleteTodo(@Args('id') id: string, @Context() context: any) {
+    try {
+      await this.todosService.remove(id, context.req.user.id);
+      return { success: true };
+    } catch (e) {
+      return { success: false };
+    }
   }
 }

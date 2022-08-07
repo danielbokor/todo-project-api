@@ -1,19 +1,17 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { NewUserInput } from './dto/new-user-input';
 import { UserModel } from './models/user.model';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private usersRepo: UserModel[] = [];
-  constructor() {
-    this.usersRepo = [];
-  }
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   async create(data: NewUserInput): Promise<UserModel> {
     let existentUser: UserModel;
@@ -29,23 +27,15 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const encryptedPassword = await bcrypt.hash(data.password, salt);
 
-    const newUser: UserModel = {
-      id: randomUUID(),
+    const newUser = this.userRepository.create({
       ...data,
       password: encryptedPassword,
-    };
-
-    this.usersRepo.push(newUser);
-
-    return newUser;
+    });
+    return this.userRepository.save(newUser) as unknown as UserModel;
   }
 
   async findOne(email: string): Promise<UserModel> {
-    const user = this.usersRepo.find((item) => item.email === email);
-
-    return user
-      ? Promise.resolve(user)
-      : Promise.reject(new NotFoundException(`email not found ${email}`));
+    return this.userRepository.findOneBy({ email }) as unknown as UserModel;
   }
 
   async findOneByEmailAndPassword(
@@ -63,15 +53,10 @@ export class UsersService {
   }
 
   async findOneById(id: string): Promise<UserModel> {
-    const user = this.usersRepo.find((item) => item.id === id);
-    if (user) {
-      return Promise.resolve(user);
-    }
-
-    return Promise.reject(new NotFoundException(`User ID not found ${id}`));
+    return this.userRepository.findOneBy({ id }) as unknown as UserModel;
   }
 
   async findAll(): Promise<UserModel[]> {
-    return Promise.resolve(this.usersRepo);
+    return this.userRepository.find({}) as unknown as UserModel[];
   }
 }

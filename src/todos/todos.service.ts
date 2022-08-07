@@ -1,56 +1,75 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { UsersService } from '../users/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TodoEntity } from '../entities/todo.entity';
+import { UserEntity } from '../entities/user.entity';
 import { TodoModel } from './models/todo.model';
 
 @Injectable()
 export class TodosService {
-  private todosRepo: TodoModel[] = [];
-
-  constructor(private readonly usersService: UsersService) {
-    this.todosRepo = [];
-  }
+  constructor(
+    @InjectRepository(TodoEntity)
+    private readonly todoRepository: Repository<TodoEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   async create(title: string, isCompleted: boolean, userId: string) {
-    const user = await this.usersService.findOneById(userId);
+    const user = await this.userRepository.findOneBy({ id: userId });
 
-    const newTodo: TodoModel = {
-      id: randomUUID(),
+    const newTodo = this.todoRepository.create({
       title,
       isCompleted,
       user,
-    };
-
-    this.todosRepo.push(newTodo);
-
-    return newTodo;
+    });
+    return this.todoRepository.save(newTodo) as unknown as TodoModel;
   }
 
-  async update(id: string, isCompleted: boolean) {
-    const existentTodo = this.todosRepo.find((item) => item.id === id);
+  async update(id: string, isCompleted: boolean, userId: string) {
+    const existentTodo = await this.todoRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        user: true,
+      },
+    });
 
-    if (!existentTodo) {
+    if (!existentTodo || existentTodo.user.id !== userId) {
       throw new BadRequestException();
     }
 
     existentTodo.isCompleted = isCompleted;
 
-    return existentTodo;
+    return existentTodo as unknown as TodoModel;
   }
 
-  async remove(id: string) {
-    const existentTodo = this.todosRepo.find((item) => item.id === id);
+  async remove(id: string, userId: string) {
+    const existentTodo = await this.todoRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        user: true,
+      },
+    });
 
-    if (!existentTodo) {
+    if (!existentTodo || existentTodo.user.id !== userId) {
       throw new BadRequestException();
     }
 
-    this.todosRepo = this.todosRepo.filter((item) => item.id !== id);
+    await this.todoRepository.remove(existentTodo);
 
     return existentTodo;
   }
 
-  async findAll() {
-    return Promise.resolve(this.todosRepo);
+  async findAll(userId: string) {
+    const todos = await this.todoRepository.find({
+      relations: {
+        user: true,
+      },
+    });
+
+    return todos.filter((todo) => todo.user.id === userId) as TodoModel[];
   }
 }

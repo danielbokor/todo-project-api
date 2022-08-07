@@ -3,8 +3,8 @@ import { stringify } from 'querystring';
 import { UserModel } from '../users/models/user.model';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { AccessTokenPayload } from './models/access-token.payload';
-import { LoginPayload } from './models/login.payload';
+import { AccessTokenPayload } from './payloads/access-token.payload';
+import { LoginPayload } from './payloads/login.payload';
 
 @Resolver()
 export class AuthResolver {

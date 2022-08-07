@@ -6,8 +6,8 @@ import { access } from 'fs';
 import { UserModel } from '../users/models/user.model';
 import { UsersService } from '../users/users.service';
 import { jwtConstants, tokenExpiry } from './constants';
-import { AccessTokenPayload } from './models/access-token.payload';
-import { LoginPayload } from './models/login.payload';
+import { AccessTokenPayload } from './payloads/access-token.payload';
+import { LoginPayload } from './payloads/login.payload';
 
 @Injectable()
 export class AuthService {

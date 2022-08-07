@@ -30,6 +30,11 @@ type LoginPayload {
   refreshToken: String!
 }
 
+"""success payload"""
+type SuccessPayload {
+  success: Boolean!
+}
+
 """todo"""
 type TodoModel {
   id: ID!
@@ -48,5 +53,5 @@ type Mutation {
   refreshAccessToken(refreshToken: String!): AccessTokenPayload!
   createTodo(title: String!, isCompleted: Boolean!): TodoModel!
   updateTodo(id: String!, isCompleted: Boolean!): TodoModel!
-  deleteTodo(id: String!): TodoModel!
+  deleteTodo(id: String!): SuccessPayload!
 }
