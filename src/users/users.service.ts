@@ -68,7 +68,7 @@ export class UsersService {
       return Promise.resolve(user);
     }
 
-    return Promise.reject(new NotFoundException(`ID not found ${id}`));
+    return Promise.reject(new NotFoundException(`User ID not found ${id}`));
   }
 
   async findAll(): Promise<UserModel[]> {

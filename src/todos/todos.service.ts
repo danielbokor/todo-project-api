@@ -1,20 +1,24 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { UsersService } from '../users/users.service';
 import { TodoModel } from './models/todo.model';
 
 @Injectable()
 export class TodosService {
   private todosRepo: TodoModel[] = [];
 
-  constructor() {
+  constructor(private readonly usersService: UsersService) {
     this.todosRepo = [];
   }
 
-  async create(title: string, isCompleted: boolean) {
-    const newTodo = {
+  async create(title: string, isCompleted: boolean, userId: string) {
+    const user = await this.usersService.findOneById(userId);
+
+    const newTodo: TodoModel = {
       id: randomUUID(),
       title,
       isCompleted,
+      user,
     };
 
     this.todosRepo.push(newTodo);

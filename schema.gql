@@ -35,6 +35,7 @@ type TodoModel {
   id: ID!
   title: String!
   isCompleted: Boolean!
+  user: UserModel!
 }
 
 type Query {
