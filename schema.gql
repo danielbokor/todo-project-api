@@ -10,6 +10,19 @@ type UserModel {
   password: String!
 }
 
+type AccessTokenPayload {
+  accessToken: String!
+}
+
+"""user"""
+type LoginPayload {
+  """The auth token of an user."""
+  accessToken: String!
+
+  """The refresh token of an user."""
+  refreshToken: String!
+}
+
 type Query {
   user(id: String!): UserModel!
   users: [UserModel!]!
@@ -17,6 +30,6 @@ type Query {
 
 type Mutation {
   signUp(name: String!, email: String!, password: String!): UserModel!
-  login(email: String!, password: String!): UserModel!
-  refreshAccessToken(refreshToken: String!): String!
+  login(email: String!, password: String!): LoginPayload!
+  refreshAccessToken(refreshToken: String!): AccessTokenPayload!
 }

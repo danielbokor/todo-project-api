@@ -16,32 +16,4 @@ export class UsersResolver {
   async users() {
     return this.usersService.findAll();
   }
-
-  @Mutation((returns) => UserModel)
-  async signUp(
-    @Args('name') name: string,
-    @Args('email') email: string,
-    @Args('password') password: string,
-  ) {
-    console.log(name, email, password);
-
-    return this.usersService.create({ name, email, password });
-  }
-
-  @Mutation((returns) => UserModel)
-  async login(
-    @Args('email') email: string,
-    @Args('password') password: string,
-  ) {
-    console.log(email, password);
-
-    return this.usersService.findOneByEmailAndPassword(email, password);
-  }
-
-  @Mutation((returns) => String)
-  async refreshAccessToken(@Args('refreshToken') refreshToken: string) {
-    console.log(refreshToken);
-
-    return 'abcd';
-  }
 }

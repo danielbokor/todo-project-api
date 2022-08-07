@@ -20,7 +20,7 @@ export class UsersService {
     let existentUser: UserModel;
 
     try {
-      existentUser = await this.findOneByEmail(data.email);
+      existentUser = await this.findOne(data.email);
     } catch (e) {}
 
     if (existentUser) {
@@ -41,7 +41,7 @@ export class UsersService {
     return newUser;
   }
 
-  async findOneByEmail(email: string): Promise<UserModel> {
+  async findOne(email: string): Promise<UserModel> {
     const user = this.usersRepo.find((item) => item.email === email);
 
     return user
@@ -53,7 +53,7 @@ export class UsersService {
     email: string,
     password: string,
   ): Promise<UserModel> {
-    const existentUser = await this.findOneByEmail(email);
+    const existentUser = await this.findOne(email);
 
     const isMatch = await bcrypt.compare(password, existentUser.password);
     if (!isMatch) {
