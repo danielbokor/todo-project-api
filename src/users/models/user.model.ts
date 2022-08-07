@@ -7,6 +7,9 @@ export class UserModel implements UserWithPasswordInterface {
   id: string;
 
   @Field()
+  name: string;
+
+  @Field()
   email: string;
 
   @Field()

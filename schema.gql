@@ -5,6 +5,7 @@
 """user"""
 type UserModel {
   id: ID!
+  name: String!
   email: String!
   password: String!
 }
@@ -17,4 +18,5 @@ type Query {
 type Mutation {
   signUp(name: String!, email: String!, password: String!): UserModel!
   login(email: String!, password: String!): UserModel!
+  refreshAccessToken(refreshToken: String!): String!
 }
