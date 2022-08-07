@@ -13,3 +13,8 @@ type Query {
   user(id: String!): UserModel!
   users: [UserModel!]!
 }
+
+type Mutation {
+  signUp(name: String!, email: String!, password: String!): UserModel!
+  login(email: String!, password: String!): UserModel!
+}

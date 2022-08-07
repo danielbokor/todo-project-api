@@ -1,4 +1,4 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { UserModel } from './models/user.model';
 import { UsersService } from './users.service';
 
@@ -14,5 +14,26 @@ export class UsersResolver {
   @Query((returns) => [UserModel])
   async users() {
     return this.usersService.findAll();
+  }
+
+  @Mutation((returns) => UserModel)
+  async signUp(
+    @Args('name') name: string,
+    @Args('email') email: string,
+    @Args('password') password: string,
+  ) {
+    console.log(name, email, password);
+
+    return this.usersService.getById('123');
+  }
+
+  @Mutation((returns) => UserModel)
+  async login(
+    @Args('email') email: string,
+    @Args('password') password: string,
+  ) {
+    console.log(email, password);
+
+    return this.usersService.getById('123');
   }
 }

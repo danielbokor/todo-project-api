@@ -1,27 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { UserInterface } from './interfaces/user.interface';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserModel } from './models/user.model';
 
 @Injectable()
 export class UsersService {
-  async getById(id: string): Promise<UserModel> {
-    const user: UserModel = {
-      id,
-      email: 'x@y.com',
-      password: 'abcd',
-    };
+  private usersRepo: UserModel[] = [];
+  constructor() {
+    this.usersRepo = [
+      {
+        id: '123',
+        email: 'x123@y123.com',
+        password: 'abcd123',
+      },
+      {
+        id: '456',
+        email: 'x456@y456.com',
+        password: 'abcd456',
+      },
+    ];
+  }
 
-    return Promise.resolve(user);
+  async getById(id: string): Promise<UserModel> {
+    const user = this.usersRepo.find((item) => item.id === id);
+    if (user) {
+      return Promise.resolve(user);
+    }
+
+    return Promise.reject(new NotFoundException(`ID not found ${id}`));
   }
 
   async findAll(): Promise<UserModel[]> {
-    const users: UserModel[] = [
-      {
-        id: '123',
-        email: 'x@y.com',
-        password: 'abcd',
-      },
-    ];
-    return Promise.resolve(users);
+    return Promise.resolve(this.usersRepo);
   }
 }
