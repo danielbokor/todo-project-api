@@ -41,7 +41,7 @@ export class TodosService {
 
     existentTodo.isCompleted = isCompleted;
 
-    return existentTodo as unknown as TodoModel;
+    return this.todoRepository.save(existentTodo) as unknown as TodoModel;
   }
 
   async remove(id: string, userId: string) {
@@ -68,8 +68,16 @@ export class TodosService {
       relations: {
         user: true,
       },
+      order: {
+        id: 'ASC',
+      },
+      where: {
+        user: {
+          id: userId,
+        },
+      },
     });
 
-    return todos.filter((todo) => todo.user.id === userId) as TodoModel[];
+    return todos as TodoModel[];
   }
 }
